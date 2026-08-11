@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-ink-950: #10131f;
+  --color-ink-900: #161a2b;
+  --color-ink-800: #1f2440;
+  --color-ink-700: #2a3155;
+  --color-ink-600: #3c4576;
+
+  --color-paper-50: #faf9f6;
+  --color-paper-100: #f3f1ea;
+  --color-paper-200: #e8e4d8;
+
+  --color-brand-500: #4f46e5;
+  --color-brand-600: #4338ca;
+  --color-brand-700: #362da3;
+
+  --color-clay-500: #c76b3f;
+  --color-clay-600: #b0592f;
+
+  --color-moss-500: #3f7d58;
+  --color-moss-600: #326346;
+
+  --color-amber-glow: #d9a441;
+  --color-rust-glow: #c1502e;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-paper-100);
+  color: var(--color-ink-900);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Card stamp signature element used for IDs / ISBN / call numbers */
+.stamp {
+  font-family: var(--font-mono);
+  letter-spacing: 0.03em;
+  border: 1px solid var(--color-ink-700);
+  border-radius: 3px;
+  padding: 1px 6px;
+  display: inline-block;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(0,0,0,0.02),
+    rgba(0,0,0,0.02) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+
+/* Simple scrollbar for tables */
+.thin-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
+.thin-scroll::-webkit-scrollbar-thumb { background: var(--color-ink-700); border-radius: 4px; }

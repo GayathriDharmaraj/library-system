@@ -23,7 +23,7 @@ describe('Profile', () => {
   it('renders the signed-in user\'s details in display mode', () => {
     login('admin@library.com', 'Admin@123', true);
     renderWithProviders(<Profile />);
-    expect(screen.getByTestId('profile-name-display')).toHaveTextContent('Ananya Admin');
+    expect(screen.getByTestId('profile-name-display')).toHaveTextContent('Gayathri');
     expect(screen.getByTestId('profile-role-display')).toHaveTextContent('admin');
     expect(screen.getByTestId('profile-email-display')).toHaveTextContent('admin@library.com');
     expect(screen.getByTestId('profile-phone-display')).toHaveTextContent('9876543210');
@@ -36,7 +36,7 @@ describe('Profile', () => {
     renderWithProviders(<Profile />);
     await user.click(screen.getByTestId('edit-profile-button'));
     expect(screen.getByTestId('profile-form')).toBeInTheDocument();
-    expect(screen.getByTestId('profile-name')).toHaveValue('Ananya Admin');
+    expect(screen.getByTestId('profile-name')).toHaveValue('Gayathri');
     expect(screen.getByTestId('profile-email')).toHaveValue('admin@library.com');
   });
 
@@ -84,7 +84,7 @@ describe('Profile', () => {
     await user.clear(screen.getByTestId('profile-name'));
     await user.type(screen.getByTestId('profile-name'), 'Discarded Name');
     await user.click(screen.getByTestId('cancel-profile-button'));
-    expect(screen.getByTestId('profile-name-display')).toHaveTextContent('Ananya Admin');
+    expect(screen.getByTestId('profile-name-display')).toHaveTextContent('Gayathri');
   });
 
   it('shows validation errors when changing the password with missing/invalid fields', async () => {

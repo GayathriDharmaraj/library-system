@@ -25,7 +25,7 @@ describe('Layout', () => {
   it('renders the signed-in user name and role in the header', () => {
     login('admin@library.com', 'Admin@123', true);
     renderLayout();
-    expect(screen.getByTestId('topbar-user-name')).toHaveTextContent('Ananya Admin');
+    expect(screen.getByTestId('topbar-user-name')).toHaveTextContent('Gayathri');
     expect(screen.getByTestId('topbar-user-role')).toHaveTextContent('admin');
   });
 

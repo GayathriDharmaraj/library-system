@@ -176,7 +176,7 @@ export const seedActivity = (): ActivityItem[] => {
 export const seedUsers: AuthUser[] = [
   {
     id: 'USR-ADMIN',
-    name: 'Ananya Admin',
+    name: 'Gayathri',
     email: 'admin@library.com',
     role: 'admin',
     phone: '9876543210',

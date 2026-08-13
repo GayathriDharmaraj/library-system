@@ -41,8 +41,21 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-ink-950 px-4">
-      <div className="w-full max-w-md">
+    <div className="login-backdrop relative overflow-hidden min-h-screen flex items-center justify-center px-4">
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 200 200"
+        className="pointer-events-none absolute -bottom-10 -right-10 w-72 h-72 text-amber-glow/10 sm:w-96 sm:h-96"
+      >
+        <g fill="currentColor">
+          <rect x="20" y="70" width="26" height="100" rx="2" transform="rotate(-6 33 120)" />
+          <rect x="55" y="55" width="26" height="115" rx="2" />
+          <rect x="90" y="65" width="26" height="105" rx="2" transform="rotate(4 103 118)" />
+          <rect x="10" y="170" width="150" height="10" rx="2" />
+        </g>
+      </svg>
+
+      <div className="w-full max-w-md relative z-10">
         <div className="flex flex-col items-center mb-6">
           <div className="stamp text-amber-glow border-amber-glow/60 text-lg mb-3">LH</div>
           <h1 className="font-display font-bold text-2xl text-white" data-testid="app-title">

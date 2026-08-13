@@ -80,3 +80,21 @@ body {
 /* Simple scrollbar for tables */
 .thin-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
 .thin-scroll::-webkit-scrollbar-thumb { background: var(--color-ink-700); border-radius: 4px; }
+
+/* Login page backdrop: layered glow + faint dot grid texture */
+.login-backdrop {
+  background:
+    radial-gradient(640px circle at 12% 18%, rgba(217, 164, 65, 0.16), transparent 60%),
+    radial-gradient(720px circle at 88% 82%, rgba(79, 70, 229, 0.24), transparent 60%),
+    linear-gradient(160deg, var(--color-ink-950) 0%, var(--color-ink-900) 55%, var(--color-ink-800) 100%);
+}
+
+.login-backdrop::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 26px 26px;
+  opacity: 0.6;
+  pointer-events: none;
+}

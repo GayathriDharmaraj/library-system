@@ -52,6 +52,17 @@ async function writeKey<T>(page: Page, key: string, value: T[]): Promise<void> {
   await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [key, value] as const);
 }
 
+/** Forces a book's availableCopies (and derived status) directly in storage, bypassing the UI. */
+export async function setBookAvailability(page: Page, bookId: string, availableCopies: number) {
+  const books = await readKey<any>(page, STORAGE_KEYS.books);
+  const book = books.find((b: any) => b.id === bookId);
+  if (book) {
+    book.availableCopies = availableCopies;
+    book.status = availableCopies > 0 ? 'Available' : 'Unavailable';
+  }
+  await writeKey(page, STORAGE_KEYS.books, books);
+}
+
 /**
  * Directly seeds `count` active (Issued) loans for the given member against the given book,
  * bypassing the UI, so tests can set up state (e.g. the 5-book limit) that would otherwise

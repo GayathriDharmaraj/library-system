@@ -1,11 +1,12 @@
-import { test, expect, ADMIN, seedActiveIssuesForMember, seedOverdueIssue } from './fixtures';
+import { test, expect, ADMIN, seedActiveIssuesForMember, seedOverdueIssue, setBookAvailability } from './fixtures';
 
 // TC-ISSUE-001..004, TC-RETURN-001, 002, 005 from LibraryHub_Test_Case_Matrix.xlsx
 // Fresh seed facts relied on below (see src/data/seedData.ts):
-//   BK-002 "To Kill a Mockingbird" -> 4/4 copies available
-//   BK-008 "The Hobbit"            -> 0/5 copies available (fully issued out)
+//   BK-002 "To Kill a Mockingbird" -> 4/4 copies available (untouched by seeded issues)
 //   MEM-002 "Isha Verma"           -> Active, 0 books currently issued
 //   MEM-003 "Rohan Iyer"           -> Active, 0 books currently issued
+// BK-008's zero-availability case is seeded directly via setBookAvailability() rather than
+// relied on from the seed formula, since every seeded book starts with at least 3 copies.
 
 test.describe('Issue Book', () => {
   test.beforeEach(async ({ loginAs }) => {
@@ -32,6 +33,8 @@ test.describe('Issue Book', () => {
 
   test('TC-ISSUE-003: cannot issue a book with zero available copies', async ({ page }) => {
     await page.goto('/issue-book');
+    await setBookAvailability(page, 'BK-008', 0);
+    await page.reload();
     await page.getByTestId('issue-select-member').selectOption('MEM-002');
     await page.getByTestId('issue-select-book').selectOption('BK-008');
     await page.getByTestId('issue-book-button').click();

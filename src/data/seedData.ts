@@ -58,8 +58,9 @@ const bookSeeds: Array<[string, string, string, string, string, number]> = [
 export const seedBooks = (): Book[] =>
   bookSeeds.map(([isbn, title, author, category, publisher, publishedYear], i) => {
     const totalCopies = 3 + (i % 5);
-    const issuedCount = i % 4 === 0 ? Math.min(totalCopies, 1 + (i % 3)) : i % 7 === 0 ? totalCopies : 0;
-    const availableCopies = Math.max(0, totalCopies - issuedCount);
+    // All copies start available; buildSeedIssues() below is the single source of truth
+    // for decrementing availableCopies to match the actual active issue records it creates.
+    const availableCopies = totalCopies;
     return {
       id: `BK-${String(i + 1).padStart(3, '0')}`,
       isbn,
@@ -155,6 +156,8 @@ export const buildSeedIssues = (books: Book[], members: Member[]): { issues: Iss
 
     if (!p.returned) {
       member.booksIssued += 1;
+      book.availableCopies = Math.max(0, book.availableCopies - 1);
+      book.status = book.availableCopies > 0 ? 'Available' : 'Unavailable';
     }
   });
 

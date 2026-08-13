@@ -12,6 +12,7 @@ import IssueHistory from './pages/IssueHistory';
 import Login from './pages/Login';
 import MemberDetails from './pages/MemberDetails';
 import Members from './pages/Members';
+import MyAccount from './pages/MyAccount';
 import NotFound from './pages/NotFound';
 import OverdueBooks from './pages/OverdueBooks';
 import Profile from './pages/Profile';
@@ -29,7 +30,7 @@ export default function App() {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/login" element={<Login />} />
 
-            <Route element={<ProtectedRoute />}>
+            <Route element={<ProtectedRoute staffOnly />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/books" element={<Books />} />
               <Route path="/books/:id" element={<BookDetails />} />
@@ -40,6 +41,10 @@ export default function App() {
               <Route path="/overdue-books" element={<OverdueBooks />} />
               <Route path="/issue-history" element={<IssueHistory />} />
               <Route path="/categories" element={<Categories />} />
+            </Route>
+
+            <Route element={<ProtectedRoute />}>
+              <Route path="/my-account" element={<MyAccount />} />
               <Route path="/profile" element={<Profile />} />
             </Route>
 

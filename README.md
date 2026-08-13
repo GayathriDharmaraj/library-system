@@ -35,6 +35,9 @@ To wipe and re-seed the data at any time, go to **Profile → Test Environment S
 |---|---|---|
 | Admin | `admin@library.com` | `Admin@123` |
 | Librarian | `librarian@library.com` | `Librarian@123` |
+| Member | `member@library.com` | `Member@123` |
+
+Admin and Librarian see the full library-management UI. Member is a patron self-service account (linked to member record `MEM-008`) that only sees its own borrowed books, fines, and profile at `/my-account` — staff-only routes redirect a Member back to `/my-account`.
 
 ---
 
@@ -53,6 +56,7 @@ To wipe and re-seed the data at any time, go to **Profile → Test Environment S
 | Overdue Books | `/overdue-books` |
 | Issue History | `/issue-history` |
 | Categories | `/categories` |
+| My Account (Member only) | `/my-account` |
 | Profile | `/profile` |
 | 404 Not Found | any unmatched route |
 
@@ -100,6 +104,8 @@ src/
 
 **UI:** sidebar navigation, responsive hamburger menu, toast notifications, confirmation dialogs, empty search results, 404 page, logout confirmation.
 
+**Roles/Permissions:** Member login lands on `/my-account` instead of `/dashboard`; direct navigation to any staff-only route (Dashboard, Books, Members, Issue Book, Return Books, Overdue Books, Issue History, Categories) redirects a Member back to `/my-account`; Admin/Librarian retain full access to all staff routes.
+
 ---
 
 ## 7. Important `data-testid` Selectors
@@ -130,6 +136,9 @@ src/
 
 **Profile**
 `edit-profile-button`, `profile-form`, `change-password-button`, `change-password-form`, `password-rules`, `reset-demo-data-button`, `reset-demo-data-dialog`
+
+**My Account (Member role)**
+`my-account-page`, `stat-current-loans`, `stat-overdue-loans`, `stat-outstanding-fine`, `stat-membership-type`, `my-account-profile`, `my-account-name`, `my-account-status`, `current-loans-table`, `current-loan-row-{id}`, `past-loans-table`, `past-loan-row-{id}`, `nav-my-account`
 
 **Errors / Empty / 404**
 `*-error` (per-field validation messages), `*-empty-state`, `not-found-page`

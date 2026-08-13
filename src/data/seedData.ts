@@ -192,9 +192,20 @@ export const seedUsers: AuthUser[] = [
     address: '2 Reading Row, Bengaluru, KA',
     avatarColor: '#c76b3f',
   },
+  {
+    id: 'USR-MEMBER',
+    name: 'Ananya Menon',
+    email: 'member@library.com',
+    role: 'member',
+    phone: '9810000959',
+    address: '107 MG Road, Bengaluru, KA',
+    avatarColor: '#3f7d58',
+    memberId: 'MEM-008',
+  },
 ];
 
 export const CREDENTIALS: Record<string, string> = {
   'admin@library.com': 'Admin@123',
   'librarian@library.com': 'Librarian@123',
+  'member@library.com': 'Member@123',
 };

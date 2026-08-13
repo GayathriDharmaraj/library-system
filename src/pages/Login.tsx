@@ -14,7 +14,7 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false);
 
   if (user) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={user.role === 'member' ? '/my-account' : '/dashboard'} replace />;
   }
 
   const validate = (): boolean => {
@@ -37,7 +37,7 @@ export default function Login() {
       setErrors({ form: result.error });
       return;
     }
-    navigate('/dashboard', { replace: true });
+    navigate(result.user?.role === 'member' ? '/my-account' : '/dashboard', { replace: true });
   };
 
   return (
@@ -162,6 +162,7 @@ export default function Login() {
           <p className="font-semibold text-white mb-1">Test credentials</p>
           <p>Admin — admin@library.com / Admin@123</p>
           <p>Librarian — librarian@library.com / Librarian@123</p>
+          <p>Member — member@library.com / Member@123</p>
         </div>
       </div>
     </div>

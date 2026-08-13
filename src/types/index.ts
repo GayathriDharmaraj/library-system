@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'librarian';
+export type UserRole = 'admin' | 'librarian' | 'member';
 
 export interface AuthUser {
   id: string;
@@ -8,6 +8,8 @@ export interface AuthUser {
   phone: string;
   address: string;
   avatarColor: string;
+  /** Links a 'member'-role account to their Member record. Unset for staff (admin/librarian) accounts. */
+  memberId?: string;
 }
 
 export interface Category {

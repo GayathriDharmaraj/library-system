@@ -18,6 +18,13 @@ describe('login', () => {
     expect(result.user?.role).toBe('librarian');
   });
 
+  it('succeeds with valid member credentials and links to a memberId', () => {
+    const result = login('member@library.com', 'Member@123', false);
+    expect(result.success).toBe(true);
+    expect(result.user?.role).toBe('member');
+    expect(result.user?.memberId).toBe('MEM-008');
+  });
+
   it('normalizes email case and whitespace before checking credentials', () => {
     const result = login('  ADMIN@Library.com  ', 'Admin@123', false);
     expect(result.success).toBe(true);

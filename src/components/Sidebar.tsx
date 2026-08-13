@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import type { UserRole } from '../types';
 
 interface NavItem {
   label: string;
@@ -7,7 +8,7 @@ interface NavItem {
   icon: string;
 }
 
-const navItems: NavItem[] = [
+const staffNavItems: NavItem[] = [
   { label: 'Dashboard', to: '/dashboard', testId: 'nav-dashboard', icon: '◱' },
   { label: 'Books', to: '/books', testId: 'nav-books', icon: '▤' },
   { label: 'Members', to: '/members', testId: 'nav-members', icon: '◉' },
@@ -19,13 +20,20 @@ const navItems: NavItem[] = [
   { label: 'Profile', to: '/profile', testId: 'nav-profile', icon: '◍' },
 ];
 
+const memberNavItems: NavItem[] = [
+  { label: 'My Account', to: '/my-account', testId: 'nav-my-account', icon: '◱' },
+  { label: 'Profile', to: '/profile', testId: 'nav-profile', icon: '◍' },
+];
+
 interface SidebarProps {
   mobileOpen: boolean;
   onNavigate: () => void;
   onLogout: () => void;
+  role: UserRole;
 }
 
-export default function Sidebar({ mobileOpen, onNavigate, onLogout }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onNavigate, onLogout, role }: SidebarProps) {
+  const navItems = role === 'member' ? memberNavItems : staffNavItems;
   return (
     <>
       {mobileOpen && (

@@ -18,7 +18,12 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-screen bg-paper-100">
-      <Sidebar mobileOpen={mobileOpen} onNavigate={() => setMobileOpen(false)} onLogout={() => setConfirmLogoutOpen(true)} />
+      <Sidebar
+        mobileOpen={mobileOpen}
+        onNavigate={() => setMobileOpen(false)}
+        onLogout={() => setConfirmLogoutOpen(true)}
+        role={user?.role ?? 'member'}
+      />
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 bg-white border-b border-ink-900/10 sticky top-0 z-20">

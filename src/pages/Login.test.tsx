@@ -13,6 +13,7 @@ function renderLogin(initialEntry = '/login') {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<div data-testid="dashboard-page">Dashboard</div>} />
+          <Route path="/my-account" element={<div data-testid="my-account-page">My Account</div>} />
         </Routes>
       </AuthProvider>
     </MemoryRouter>
@@ -26,6 +27,7 @@ describe('Login', () => {
     expect(screen.getByTestId('login-form')).toBeInTheDocument();
     expect(screen.getByTestId('demo-credentials')).toHaveTextContent('admin@library.com');
     expect(screen.getByTestId('demo-credentials')).toHaveTextContent('librarian@library.com');
+    expect(screen.getByTestId('demo-credentials')).toHaveTextContent('member@library.com');
   });
 
   it('shows required-field errors when submitting an empty form', async () => {
@@ -52,6 +54,23 @@ describe('Login', () => {
     await user.type(screen.getByTestId('login-password'), 'Librarian@123');
     await user.click(screen.getByTestId('login-button'));
     expect(screen.getByTestId('dashboard-page')).toBeInTheDocument();
+  });
+
+  it('logs in successfully with valid member credentials and navigates to /my-account', async () => {
+    const user = userEvent.setup();
+    renderLogin();
+    await user.type(screen.getByTestId('login-username'), 'member@library.com');
+    await user.type(screen.getByTestId('login-password'), 'Member@123');
+    await user.click(screen.getByTestId('login-button'));
+    expect(screen.getByTestId('my-account-page')).toBeInTheDocument();
+    expect(screen.queryByTestId('dashboard-page')).not.toBeInTheDocument();
+  });
+
+  it('redirects an already-authenticated member to /my-account instead of /dashboard', () => {
+    authLogin('member@library.com', 'Member@123', true);
+    renderLogin();
+    expect(screen.getByTestId('my-account-page')).toBeInTheDocument();
+    expect(screen.queryByTestId('login-form')).not.toBeInTheDocument();
   });
 
   it('shows a form-level error for an unknown email', async () => {

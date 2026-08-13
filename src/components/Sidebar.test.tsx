@@ -8,7 +8,7 @@ describe('Sidebar', () => {
   it('renders the app logo and all nav items', () => {
     render(
       <MemoryRouter initialEntries={['/dashboard']}>
-        <Sidebar mobileOpen={false} onNavigate={vi.fn()} onLogout={vi.fn()} />
+        <Sidebar mobileOpen={false} onNavigate={vi.fn()} onLogout={vi.fn()} role="admin" />
       </MemoryRouter>
     );
     expect(screen.getByTestId('app-logo')).toHaveTextContent('LibraryHub');
@@ -30,7 +30,7 @@ describe('Sidebar', () => {
   it('marks the current route as active', () => {
     render(
       <MemoryRouter initialEntries={['/books']}>
-        <Sidebar mobileOpen={false} onNavigate={vi.fn()} onLogout={vi.fn()} />
+        <Sidebar mobileOpen={false} onNavigate={vi.fn()} onLogout={vi.fn()} role="admin" />
       </MemoryRouter>
     );
     expect(screen.getByTestId('nav-books').className).toContain('bg-brand-600');
@@ -40,7 +40,7 @@ describe('Sidebar', () => {
   it('does not render the scrim when mobileOpen is false', () => {
     render(
       <MemoryRouter initialEntries={['/dashboard']}>
-        <Sidebar mobileOpen={false} onNavigate={vi.fn()} onLogout={vi.fn()} />
+        <Sidebar mobileOpen={false} onNavigate={vi.fn()} onLogout={vi.fn()} role="admin" />
       </MemoryRouter>
     );
     expect(screen.queryByTestId('sidebar-scrim')).not.toBeInTheDocument();
@@ -49,7 +49,7 @@ describe('Sidebar', () => {
   it('renders the scrim when mobileOpen is true', () => {
     render(
       <MemoryRouter initialEntries={['/dashboard']}>
-        <Sidebar mobileOpen onNavigate={vi.fn()} onLogout={vi.fn()} />
+        <Sidebar mobileOpen onNavigate={vi.fn()} onLogout={vi.fn()} role="admin" />
       </MemoryRouter>
     );
     expect(screen.getByTestId('sidebar-scrim')).toBeInTheDocument();
@@ -60,7 +60,7 @@ describe('Sidebar', () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter initialEntries={['/dashboard']}>
-        <Sidebar mobileOpen onNavigate={onNavigate} onLogout={vi.fn()} />
+        <Sidebar mobileOpen onNavigate={onNavigate} onLogout={vi.fn()} role="admin" />
       </MemoryRouter>
     );
     await user.click(screen.getByTestId('sidebar-scrim'));
@@ -72,7 +72,7 @@ describe('Sidebar', () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter initialEntries={['/dashboard']}>
-        <Sidebar mobileOpen={false} onNavigate={onNavigate} onLogout={vi.fn()} />
+        <Sidebar mobileOpen={false} onNavigate={onNavigate} onLogout={vi.fn()} role="admin" />
       </MemoryRouter>
     );
     await user.click(screen.getByTestId('nav-books'));
@@ -84,10 +84,34 @@ describe('Sidebar', () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter initialEntries={['/dashboard']}>
-        <Sidebar mobileOpen={false} onNavigate={vi.fn()} onLogout={onLogout} />
+        <Sidebar mobileOpen={false} onNavigate={vi.fn()} onLogout={onLogout} role="admin" />
       </MemoryRouter>
     );
     await user.click(screen.getByTestId('logout-button'));
     expect(onLogout).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows only My Account and Profile for a member role', () => {
+    render(
+      <MemoryRouter initialEntries={['/my-account']}>
+        <Sidebar mobileOpen={false} onNavigate={vi.fn()} onLogout={vi.fn()} role="member" />
+      </MemoryRouter>
+    );
+    expect(screen.getByTestId('nav-my-account')).toBeInTheDocument();
+    expect(screen.getByTestId('nav-profile')).toBeInTheDocument();
+    expect(screen.queryByTestId('nav-dashboard')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('nav-books')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('nav-members')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('nav-issue-book')).not.toBeInTheDocument();
+  });
+
+  it('shows the full staff nav for a librarian role', () => {
+    render(
+      <MemoryRouter initialEntries={['/dashboard']}>
+        <Sidebar mobileOpen={false} onNavigate={vi.fn()} onLogout={vi.fn()} role="librarian" />
+      </MemoryRouter>
+    );
+    expect(screen.getByTestId('nav-dashboard')).toBeInTheDocument();
+    expect(screen.queryByTestId('nav-my-account')).not.toBeInTheDocument();
   });
 });

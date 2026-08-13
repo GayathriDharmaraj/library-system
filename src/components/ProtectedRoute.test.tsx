@@ -20,6 +20,22 @@ function renderProtected(initialEntry = '/protected') {
   );
 }
 
+function renderStaffOnlyProtected(initialEntry = '/staff-only') {
+  return render(
+    <MemoryRouter initialEntries={[initialEntry]}>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<div data-testid="login-page">Login Page</div>} />
+          <Route path="/my-account" element={<div data-testid="my-account-page">My Account Page</div>} />
+          <Route element={<ProtectedRoute staffOnly />}>
+            <Route path="/staff-only" element={<div data-testid="staff-only-page">Staff Only Page</div>} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </MemoryRouter>
+  );
+}
+
 describe('ProtectedRoute', () => {
   it('redirects to /login when there is no authenticated user', () => {
     renderProtected();
@@ -33,5 +49,18 @@ describe('ProtectedRoute', () => {
     expect(screen.getByTestId('protected-page')).toBeInTheDocument();
     expect(screen.getByTestId('sidebar')).toBeInTheDocument();
     expect(screen.queryByTestId('login-page')).not.toBeInTheDocument();
+  });
+
+  it('allows staff (admin/librarian) roles onto a staffOnly route', () => {
+    login('librarian@library.com', 'Librarian@123', true);
+    renderStaffOnlyProtected();
+    expect(screen.getByTestId('staff-only-page')).toBeInTheDocument();
+  });
+
+  it('redirects a member role away from a staffOnly route to /my-account', () => {
+    login('member@library.com', 'Member@123', true);
+    renderStaffOnlyProtected();
+    expect(screen.getByTestId('my-account-page')).toBeInTheDocument();
+    expect(screen.queryByTestId('staff-only-page')).not.toBeInTheDocument();
   });
 });

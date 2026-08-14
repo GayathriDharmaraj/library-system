@@ -39,6 +39,8 @@ To wipe and re-seed the data at any time, go to **Profile → Test Environment S
 
 Admin and Librarian see the full library-management UI. Member is a patron self-service account (linked to member record `MEM-008`) that only sees its own borrowed books, fines, and profile at `/my-account` — staff-only routes redirect a Member back to `/my-account`.
 
+**Any of the 20 seeded members can also log in as themselves** — just use their own email (`firstname.lastname@mail.com`, e.g. `aarav.sharma@mail.com`) with the shared password `Member@123`. No separate credential list is needed per member; `login()` falls back to matching against the real `Member` records in storage whenever the email isn't a staff account.
+
 ---
 
 ## 3. Pages & Routes

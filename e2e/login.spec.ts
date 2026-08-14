@@ -62,6 +62,16 @@ test.describe('Login', () => {
     await expect(page).toHaveURL(/\/login$/);
   });
 
+  test('TC-LOGIN-011: any registered member can log in with their own email and the shared demo password', async ({ page }) => {
+    await page.goto('/login');
+    await page.getByTestId('login-username').fill('isha.verma@mail.com'); // MEM-002's real seeded email
+    await page.getByTestId('login-password').fill('Member@123');
+    await page.getByTestId('login-button').click();
+
+    await expect(page).toHaveURL(/\/my-account$/);
+    await expect(page.getByTestId('my-account-name')).toHaveText('Isha Verma');
+  });
+
   test('TC-LOGIN-010: logout returns the user to the Login page', async ({ page, loginAs }) => {
     await loginAs(ADMIN.email, ADMIN.password);
 

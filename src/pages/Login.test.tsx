@@ -4,7 +4,25 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from '../context/AuthContext';
 import { login as authLogin } from '../services/auth';
+import { setMembers } from '../services/storage';
+import type { Member } from '../types';
 import Login from './Login';
+
+const testMember: Member = {
+  id: 'MEM-100',
+  firstName: 'Test',
+  lastName: 'Member',
+  email: 'test.member@mail.com',
+  phone: '9999999999',
+  dob: '1990-01-01',
+  address: '1 Test Street',
+  membershipType: 'Basic',
+  membershipStart: '2025-01-01',
+  membershipExpiry: '2026-01-01',
+  status: 'Active',
+  joinDate: '2025-01-01',
+  booksIssued: 0,
+};
 
 function renderLogin(initialEntry = '/login') {
   return render(
@@ -64,6 +82,16 @@ describe('Login', () => {
     await user.click(screen.getByTestId('login-button'));
     expect(screen.getByTestId('my-account-page')).toBeInTheDocument();
     expect(screen.queryByTestId('dashboard-page')).not.toBeInTheDocument();
+  });
+
+  it('logs in successfully with any registered member\'s own email and the shared demo password', async () => {
+    setMembers([testMember]);
+    const user = userEvent.setup();
+    renderLogin();
+    await user.type(screen.getByTestId('login-username'), 'test.member@mail.com');
+    await user.type(screen.getByTestId('login-password'), 'Member@123');
+    await user.click(screen.getByTestId('login-button'));
+    expect(screen.getByTestId('my-account-page')).toBeInTheDocument();
   });
 
   it('redirects an already-authenticated member to /my-account instead of /dashboard', () => {

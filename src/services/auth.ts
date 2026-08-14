@@ -1,8 +1,11 @@
 import type { AuthUser } from '../types';
 import { CREDENTIALS, seedUsers } from '../data/seedData';
-import { STORAGE_KEYS } from './storage';
+import { STORAGE_KEYS, getMembers } from './storage';
 
 const SESSION_KEY = 'library_session';
+
+/** Shared demo password every registered member can use to log in with their own email. */
+export const MEMBER_DEMO_PASSWORD = 'Member@123';
 
 export interface LoginResult {
   success: boolean;
@@ -14,16 +17,35 @@ export function login(email: string, password: string, remember: boolean): Login
   const normalizedEmail = email.trim().toLowerCase();
   const knownEmails = Object.keys(CREDENTIALS);
 
-  if (!knownEmails.includes(normalizedEmail)) {
-    return { success: false, error: 'No account found with this username.' };
-  }
-  if (CREDENTIALS[normalizedEmail] !== password) {
-    return { success: false, error: 'Incorrect password. Please try again.' };
-  }
+  let user: AuthUser | undefined;
 
-  const user = seedUsers.find((u) => u.email === normalizedEmail);
-  if (!user) {
-    return { success: false, error: 'Account could not be loaded.' };
+  if (knownEmails.includes(normalizedEmail)) {
+    if (CREDENTIALS[normalizedEmail] !== password) {
+      return { success: false, error: 'Incorrect password. Please try again.' };
+    }
+    user = seedUsers.find((u) => u.email === normalizedEmail);
+    if (!user) {
+      return { success: false, error: 'Account could not be loaded.' };
+    }
+  } else {
+    // Any registered library member can also log in with their own email + the shared demo password.
+    const member = getMembers().find((m) => m.email.toLowerCase() === normalizedEmail);
+    if (!member) {
+      return { success: false, error: 'No account found with this username.' };
+    }
+    if (password !== MEMBER_DEMO_PASSWORD) {
+      return { success: false, error: 'Incorrect password. Please try again.' };
+    }
+    user = {
+      id: `USR-${member.id}`,
+      name: `${member.firstName} ${member.lastName}`,
+      email: normalizedEmail,
+      role: 'member',
+      phone: member.phone,
+      address: member.address,
+      avatarColor: '#3f7d58',
+      memberId: member.id,
+    };
   }
 
   const storage = remember ? localStorage : sessionStorage;

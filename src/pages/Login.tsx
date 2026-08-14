@@ -176,6 +176,7 @@ export default function Login() {
           <p>Admin — admin@library.com / Admin@123</p>
           <p>Librarian — librarian@library.com / Librarian@123</p>
           <p>Member — member@library.com / Member@123</p>
+          <p className="mt-1 text-paper-200/60">Any registered member can also sign in with their own email + Member@123 (e.g. aarav.sharma@mail.com)</p>
         </div>
       </div>
     </div>

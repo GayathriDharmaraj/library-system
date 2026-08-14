@@ -4,8 +4,7 @@ import { useToast } from '../context/ToastContext';
 import type { IssueRecord } from '../types';
 import { getBooks, getIssues, getMembers, nextId, pushActivity, setBooks, setIssues, setMembers } from '../services/storage';
 import { addDays, formatDate, todayISO } from '../utils/dateUtils';
-
-const MAX_BOOKS_PER_MEMBER = 5;
+import { getBookLimit } from '../utils/membership';
 
 export default function IssueBook() {
   const { showToast } = useToast();
@@ -28,6 +27,7 @@ export default function IssueBook() {
     [issues, memberId]
   );
   const memberOverdue = memberActiveIssues.filter((i) => i.status === 'Overdue');
+  const memberBookLimit = selectedMember ? getBookLimit(selectedMember.membershipType) : null;
 
   const validate = (): boolean => {
     const nextErrors: Record<string, string> = {};
@@ -41,8 +41,8 @@ export default function IssueBook() {
     if (selectedBook && selectedBook.availableCopies <= 0) {
       nextErrors.book = 'This book has no available copies right now.';
     }
-    if (selectedMember && memberActiveIssues.length >= MAX_BOOKS_PER_MEMBER) {
-      nextErrors.member = `This member already has ${MAX_BOOKS_PER_MEMBER} books issued (the maximum allowed).`;
+    if (selectedMember && memberBookLimit !== null && memberActiveIssues.length >= memberBookLimit) {
+      nextErrors.member = `This member already has ${memberBookLimit} books issued (the maximum allowed).`;
     }
 
     setErrors(nextErrors);
@@ -127,7 +127,7 @@ export default function IssueBook() {
 
         {selectedMember && (
           <div className="bg-paper-100 rounded-lg p-3 text-sm text-ink-700 flex flex-col gap-1" data-testid="member-issue-summary">
-            <span>Currently issued: <strong>{memberActiveIssues.length}</strong> / {MAX_BOOKS_PER_MEMBER}</span>
+            <span>Currently issued: <strong>{memberActiveIssues.length}</strong> / {memberBookLimit ?? '∞'}</span>
             <span>Overdue books: <strong className={memberOverdue.length > 0 ? 'text-rust-glow' : ''}>{memberOverdue.length}</strong></span>
           </div>
         )}

@@ -81,7 +81,7 @@ src/
 
 ## 5. Key Business Rules Implemented
 
-- A member cannot have more than **5 books** issued at once.
+- Concurrent book limit depends on membership type: **Basic = 5, Student = 3, Premium = unlimited** (see `src/utils/membership.ts`).
 - A book cannot be issued when `availableCopies = 0`.
 - Due date cannot be earlier than the issue date; issue date cannot be in the past.
 - Fine = **₹10 per day overdue**, calculated from due date to return date (or today, if still outstanding).
@@ -100,7 +100,7 @@ src/
 
 **Members:** register, invalid email, invalid phone, duplicate email, edit, delete, search, filter (type/status).
 
-**Issue/Return:** issue an available book, attempt to issue an unavailable book, hit the 5-book limit, invalid due date, return a book, return an overdue book, verify fine calculation, verify availability updates after return.
+**Issue/Return:** issue an available book, attempt to issue an unavailable book, hit the membership-tier book limit (Basic 5 / Student 3 / Premium unlimited), invalid due date, return a book, return an overdue book, verify fine calculation, verify availability updates after return.
 
 **UI:** sidebar navigation, responsive hamburger menu, toast notifications, confirmation dialogs, empty search results, 404 page, logout confirmation.
 

@@ -52,18 +52,24 @@ const memberActive: Member = {
 };
 
 const memberAtMax: Member = { ...memberActive, id: 'MEM-002', firstName: 'Rohan', lastName: 'Nair', booksIssued: 5 };
+const memberPremium: Member = { ...memberActive, id: 'MEM-003', firstName: 'Priya', lastName: 'Rao', membershipType: 'Premium', booksIssued: 5 };
+const memberStudent: Member = { ...memberActive, id: 'MEM-004', firstName: 'Arjun', lastName: 'Bose', membershipType: 'Student', booksIssued: 3 };
 
-function issuesForMaxedMember(): IssueRecord[] {
-  return Array.from({ length: 5 }, (_, i) => ({
-    id: `ISS-${i + 1}`,
+function issuesForMember(memberId: string, count: number): IssueRecord[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: `ISS-${memberId}-${i + 1}`,
     bookId: bookAvailable.id,
-    memberId: memberAtMax.id,
+    memberId,
     issueDate: todayISO(),
     dueDate: addDays(todayISO(), 14),
     returnDate: null,
     status: 'Issued' as const,
     fine: 0,
   }));
+}
+
+function issuesForMaxedMember(): IssueRecord[] {
+  return issuesForMember(memberAtMax.id, 5);
 }
 
 describe('IssueBook', () => {
@@ -114,7 +120,7 @@ describe('IssueBook', () => {
     expect(screen.getByTestId('issue-book-error')).toHaveTextContent('This book has no available copies right now.');
   });
 
-  it('rejects issuing to a member who already has the maximum number of books', async () => {
+  it('rejects issuing to a Basic member who already has the maximum of 5 books', async () => {
     setBooks([bookAvailable]);
     setMembers([memberAtMax]);
     setIssues(issuesForMaxedMember());
@@ -126,6 +132,44 @@ describe('IssueBook', () => {
     expect(screen.getByTestId('issue-member-error')).toHaveTextContent(
       'This member already has 5 books issued (the maximum allowed).'
     );
+  });
+
+  it('rejects issuing to a Student member who already has the maximum of 3 books', async () => {
+    setBooks([bookAvailable]);
+    setMembers([memberStudent]);
+    setIssues(issuesForMember(memberStudent.id, 3));
+    const user = userEvent.setup();
+    renderWithProviders(<IssueBook />);
+    await user.selectOptions(screen.getByTestId('issue-select-member'), memberStudent.id);
+    await user.selectOptions(screen.getByTestId('issue-select-book'), bookAvailable.id);
+    await user.click(screen.getByTestId('issue-book-button'));
+    expect(screen.getByTestId('issue-member-error')).toHaveTextContent(
+      'This member already has 3 books issued (the maximum allowed).'
+    );
+  });
+
+  it('allows issuing to a Premium member regardless of how many books they already have', async () => {
+    setBooks([bookAvailable]);
+    setMembers([memberPremium]);
+    setIssues(issuesForMember(memberPremium.id, 5));
+    const user = userEvent.setup();
+    renderWithProviders(<IssueBook />);
+    await user.selectOptions(screen.getByTestId('issue-select-member'), memberPremium.id);
+    await user.selectOptions(screen.getByTestId('issue-select-book'), bookAvailable.id);
+    await user.click(screen.getByTestId('issue-book-button'));
+    expect(screen.queryByTestId('issue-member-error')).not.toBeInTheDocument();
+    expect(screen.getByTestId('confirm-issue-dialog')).toBeInTheDocument();
+  });
+
+  it('shows an infinity symbol instead of a numeric limit for a Premium member', async () => {
+    setBooks([bookAvailable]);
+    setMembers([memberPremium]);
+    setIssues(issuesForMember(memberPremium.id, 5));
+    const user = userEvent.setup();
+    renderWithProviders(<IssueBook />);
+    await user.selectOptions(screen.getByTestId('issue-select-member'), memberPremium.id);
+    await user.selectOptions(screen.getByTestId('issue-select-book'), bookAvailable.id);
+    expect(screen.getByTestId('member-issue-summary')).toHaveTextContent('Currently issued: 5 / ∞');
   });
 
   it('rejects a due date before the issue date', async () => {
